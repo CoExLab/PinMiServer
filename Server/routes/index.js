@@ -63,6 +63,8 @@ router.get('/room/:name', function (req, res) {
     token = opentok.generateToken(sessionId);
     console.log('token' + token);
     res.setHeader('Content-Type', 'application/json');
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    //res.setHeader('Access-Control-Allow-Origin', 'https://pinmi-summer.netlify.app/');
     res.send({
       roomname: roomName,
       apiKey: apiKey,
@@ -88,6 +90,9 @@ router.get('/room/:name', function (req, res) {
       // generate token
       token = opentok.generateToken(session.sessionId);
       res.setHeader('Content-Type', 'application/json');
+      res.setHeader('Access-Control-Allow-Origin', '*');
+      res.setHeader('Access-Control-Allow-Headers', "Origin, X-Requested-With, Content-type, Accept");
+      //res.setHeader('Access-Control-Allow-Origin', 'https://pinmi-summer.netlify.app/');
       res.send({
         apiKey: apiKey,
         sessionId: session.sessionId,
@@ -103,14 +108,19 @@ router.get('/room/:name', function (req, res) {
 router.post('/archive/start', function (req, res) {
   const { sessionId, resolution, outputMode, hasVideo} = req.body;
   //var sessionId = json.sessionId;
-  opentok.startArchive(sessionId, { name: findRoomFromSessionId(sessionId), resolution, outputMode, hasVideo: 'false'} , function (err, archive) {
-    if (err) {
+  opentok.startArchive(sessionId, 
+    { name: findRoomFromSessionId(sessionId), resolution: resolution, outputMode: outputMode, hasVideo: hasVideo},
+    function (err, archive) {
+    if (err) {"Unexpected response from OpenTok"
       console.error('error in startArchive');
-      console.error(err);
+      console.error(err.type);
       res.status(500).send({ error: 'startArchive error:' + err });
       return;
     }
     res.setHeader('Content-Type', 'application/json');
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Headers', "Origin, X-Requested-With, Content-type, Accept");
+    //res.setHeader('Access-Control-Allow-Origin', 'https://pinmi-summer.netlify.app/');
     res.send(archive);
   });
 });
@@ -129,6 +139,9 @@ router.post('/archive/:archiveId/stop', function (req, res) {
       return;
     }
     res.setHeader('Content-Type', 'application/json');
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Headers', "Origin, X-Requested-With, Content-type, Accept");
+    //res.setHeader('Access-Control-Allow-Origin', 'https://pinmi-summer.netlify.app/');
     res.send(archive);
   });
 });
@@ -175,6 +188,9 @@ router.get('/archive/:archiveId', function (req, res) {
 
     // extract as a JSON object
     res.setHeader('Content-Type', 'application/json');
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Headers', "Origin, X-Requested-With, Content-type, Accept");
+    //res.setHeader('Access-Control-Allow-Origin', 'https://pinmi-summer.netlify.app/');
     res.send(archive);
   });
 });
@@ -203,6 +219,9 @@ router.get('/archive', function (req, res) {
 
     // extract as a JSON object
     res.setHeader('Content-Type', 'application/json');
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Headers', "Origin, X-Requested-With, Content-type, Accept");
+    //res.setHeader('Access-Control-Allow-Origin', 'https://pinmi-summer.netlify.app/');
     res.send(archives);
   });
 });
