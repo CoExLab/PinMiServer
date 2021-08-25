@@ -64,7 +64,7 @@ router.get('/room/:name', function (req, res) {
     console.log('token' + token);
     res.setHeader('Content-Type', 'application/json');
     res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Vary', "Origin");
+    res.setHeader('Vary', 'Origin');
     //res.setHeader('Access-Control-Allow-Origin', 'https://pinmi-summer.netlify.app/');
     res.send({
       roomname: roomName,
@@ -95,7 +95,7 @@ router.get('/room/:name', function (req, res) {
       res.setHeader('Content-Type', 'application/json');
       res.setHeader('Access-Control-Allow-Origin', '*');
       res.setHeader('Access-Control-Allow-Headers', "Access-Control-Allow-Origin, Origin, X-Requested-With, Content-type, Accept, Vary");
-      res.setHeader('Vary', "Origin");
+      res.setHeader('Vary', 'Origin');
       //res.setHeader('Access-Control-Allow-Origin', 'https://pinmi-summer.netlify.app/');
       res.send({
         apiKey: apiKey,
