@@ -125,6 +125,7 @@ router.post('/archive/start', function (req, res) {
     res.setHeader('Content-Type', 'application/json');
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Headers', "Access-Control-Allow-Origin, Origin, X-Requested-With, Content-type, Accept, Vary");
+    res.setHeader('Vary', 'Origin');
     //res.setHeader('Access-Control-Allow-Origin', 'https://pinmi-summer.netlify.app/');
     res.send(archive);
   });
@@ -145,7 +146,8 @@ router.post('/archive/:archiveId/stop', function (req, res) {
     }
     res.setHeader('Content-Type', 'application/json');
     res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Headers', "Origin, X-Requested-With, Content-type, Accept");
+    res.setHeader('Access-Control-Allow-Headers', "Access-Control-Allow-Origin, Origin, X-Requested-With, Content-type, Accept, Vary");
+    res.setHeader('Vary', 'Origin');
     //res.setHeader('Access-Control-Allow-Origin', 'https://pinmi-summer.netlify.app/');
     res.send(archive);
   });
@@ -194,7 +196,8 @@ router.get('/archive/:archiveId', function (req, res) {
     // extract as a JSON object
     res.setHeader('Content-Type', 'application/json');
     res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Headers', "Origin, X-Requested-With, Content-type, Accept");
+    res.setHeader('Access-Control-Allow-Headers', "Access-Control-Allow-Origin, Origin, X-Requested-With, Content-type, Accept, Vary");
+    res.setHeader('Vary', 'Origin');
     //res.setHeader('Access-Control-Allow-Origin', 'https://pinmi-summer.netlify.app/');
     res.send(archive);
   });
@@ -225,7 +228,8 @@ router.get('/archive', function (req, res) {
     // extract as a JSON object
     res.setHeader('Content-Type', 'application/json');
     res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Headers', "Origin, X-Requested-With, Content-type, Accept");
+    res.setHeader('Access-Control-Allow-Headers', "Access-Control-Allow-Origin, Origin, X-Requested-With, Content-type, Accept, Vary");
+    res.setHeader('Vary', 'Origin');
     //res.setHeader('Access-Control-Allow-Origin', 'https://pinmi-summer.netlify.app/');
     res.send(archives);
   });
