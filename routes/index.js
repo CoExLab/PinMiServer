@@ -62,9 +62,10 @@ router.get('/room/:name', function (req, res) {
     // generate token
     token = opentok.generateToken(sessionId);
     console.log('token' + token);
+    res.setHeader('Access-Control-Allow-Headers', "Access-Control-Allow-Origin, Access-Control-Allow-Methods, Origin, X-Requested-With, Content-type, Accept, Vary");
     res.setHeader('Content-Type', 'application/json');
     res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Headers', "Access-Control-Allow-Origin, Origin, X-Requested-With, Content-type, Accept, Vary");
+    res.setHeader('Access-Control-Allow-Methods', "OPTIONS, POST, GET, PUT");
     res.setHeader('Vary', 'Origin');
     //res.setHeader('Access-Control-Allow-Origin', 'https://pinmi-summer.netlify.app/');
     res.send({
@@ -93,9 +94,10 @@ router.get('/room/:name', function (req, res) {
 
       // generate token
       token = opentok.generateToken(session.sessionId);
+      res.setHeader('Access-Control-Allow-Headers', "Access-Control-Allow-Origin, Access-Control-Allow-Methods, Origin, X-Requested-With, Content-type, Accept, Vary");
       res.setHeader('Content-Type', 'application/json');
       res.setHeader('Access-Control-Allow-Origin', '*');
-      res.setHeader('Access-Control-Allow-Headers', "Access-Control-Allow-Origin, Origin, X-Requested-With, Content-type, Accept, Vary");
+      res.setHeader('Access-Control-Allow-Methods', "OPTIONS, POST, GET, PUT");
       res.setHeader('Vary', 'Origin');
       //res.setHeader('Access-Control-Allow-Origin', 'https://pinmi-summer.netlify.app/');
       res.send({
