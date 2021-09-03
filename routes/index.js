@@ -66,16 +66,16 @@ router.get('/test3', function (req, res) {
 router.get('/test4', function (req, res) {
   res.setHeader('Content-Type', 'application/json');
     //with current headers
-  res.setHeader('Access-Control-Allow-Headers', "Access-Control-Allow-Origin, Access-Control-Allow-Methods, Origin, X-Requested-With, Content-type, Accept, Vary");
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', "OPTIONS, POST, GET, PUT");
-  res.setHeader('Vary', 'Origin');
-  res.send({
-    message: "test4 worked"
-  });
+    res.setHeader('Access-Control-Allow-Methods', "OPTIONS, POST, GET, PUT");
+    res.setHeader('Access-Control-Allow-Headers', "Access-Control-Allow-Origin, Origin, X-Requested-With, Content-type, Accept, Vary");
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Vary', 'Origin');
+    res.send({
+      message: "test4 worked"
+    });
 });
 
-router.get('/test5', cors(), function (req, res) {
+router.get('/test4', cors(), function (req, res) {
   res.setHeader('Content-Type', 'application/json');
     //with cors library
     res.send({
@@ -83,15 +83,15 @@ router.get('/test5', cors(), function (req, res) {
     });
 });
 
-// router.options('/test6', cors())
+router.options('/test5', cors())
 
-// router.get('/test6', cors(), function (req, res) {
-//   res.setHeader('Content-Type', 'application/json');
-//     //with cors library and preflight request handled
-//     res.send({
-//       message: "test6 worked"
-//     });
-// });
+router.get('/test5', cors(), function (req, res) {
+  res.setHeader('Content-Type', 'application/json');
+    //with cors library and preflight request handled
+    res.send({
+      message: "test5 worked"
+    });
+});
 
 /**
  * GET /session redirects to /room/session
@@ -112,6 +112,7 @@ router.get('/room/:name', function (req, res) {
   // if the room name is associated with a session ID, fetch that
   if (roomToSessionIdDictionary[roomName]) {
     sessionId = roomToSessionIdDictionary[roomName];
+
     // generate token
     token = opentok.generateToken(sessionId);
     console.log('token' + token);
