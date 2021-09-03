@@ -2,9 +2,8 @@ var express = require('express');
 var router = express.Router();
 var path = require('path');
 var _ = require('lodash');
-const firebase = require("firebase");
-// Required for side-effects
-require("firebase/firestore");
+const cors = require('cors');
+
 
 var apiKey = process.env.TOKBOX_API_KEY;
 var secret = process.env.TOKBOX_SECRET;
@@ -44,6 +43,64 @@ router.get('/', function (req, res) {
  */
 router.get('/session', function (req, res) {
   res.redirect('/room/session');
+});
+
+router.get('/test1', function (req, res) {
+  res.setHeader('Content-Type', 'application/json');
+  //with no cors headers
+  res.send({
+    message: "test1 worked"
+  });
+});
+
+router.get('/test2', function (req, res) {
+  res.setHeader('Content-Type', 'application/json');
+  //with only Access-Control-Allow-Origin header
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.send({
+    message: "test2 worked"
+  });
+});
+
+router.get('/test3', function (req, res) {
+  res.setHeader('Content-Type', 'application/json');
+    //with no cors headers
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Headers', '*');
+  res.setHeader('Access-Control-Allow-Methods', '*');
+  res.send({
+    message: "test3 worked"
+  });
+});
+
+router.get('/test4', function (req, res) {
+  res.setHeader('Content-Type', 'application/json');
+    //with current headers
+  res.setHeader('Access-Control-Allow-Headers', "Access-Control-Allow-Origin, Access-Control-Allow-Methods, Origin, X-Requested-With, Content-type, Accept, Vary");
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', "OPTIONS, POST, GET, PUT");
+  res.setHeader('Vary', 'Origin');
+  res.send({
+    message: "test4 worked"
+  });
+});
+
+router.get('/test5', cors(), function (req, res) {
+  res.setHeader('Content-Type', 'application/json');
+    //with cors library
+    res.send({
+      message: "test5 worked"
+    });
+});
+
+router.options('/test6', cors())
+
+router.get('/test6', cors(), function (req, res) {
+  res.setHeader('Content-Type', 'application/json');
+    //with cors library and preflight request handled
+    res.send({
+      message: "test6 worked"
+    });
 });
 
 /**
