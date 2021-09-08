@@ -56,7 +56,7 @@ router.get('/test1', function (req, res) {
 router.get('/test2', function (req, res) {
   res.setHeader('Content-Type', 'application/json');
   //with only Access-Control-Allow-Origin header
-  res.setHeader('Access-Control-Allow-Origin', 'https://pinmi-summer.netlify.app/');
+  res.setHeader('Access-Control-Allow-Origin', 'https://pinmi-node-server.herokuapp.com/');
   res.send({
     message: "test2 worked"
   });
