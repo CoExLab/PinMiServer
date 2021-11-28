@@ -3,7 +3,9 @@ var router = express.Router();
 var path = require('path');
 var _ = require('lodash');
 const cors = require('cors');
-
+const {  getFileStream } = require('./s3');
+const fs = require('fs');
+const util = require('util');
 
 var apiKey = process.env.TOKBOX_API_KEY;
 var secret = process.env.TOKBOX_SECRET;
@@ -28,6 +30,7 @@ var opentok = new OpenTok(apiKey, secret);
 // application you should consider a more persistent storage
 
 var roomToSessionIdDictionary = {};
+var archivesCreated = []
 
 // returns the room name, given a session ID that was associated with it
 function findRoomFromSessionId(sessionId) {
@@ -56,7 +59,7 @@ router.get('/test1', function (req, res) {
 router.get('/test2', function (req, res) {
   res.setHeader('Content-Type', 'application/json');
   //with only Access-Control-Allow-Origin header
-  res.setHeader('Access-Control-Allow-Origin', 'https://pinmi-node-server.herokuapp.com/');
+  res.setHeader('Access-Control-Allow-Origin', 'https://pinmi-node-server.herokuapp.com/test2');
   res.send({
     message: "test2 worked"
   });
@@ -104,9 +107,30 @@ router.get('/test6', cors(), function (req, res) {
 });
 
 /**
+ * GET /media/:name
+ */
+
+ router.get('/media/:key', function (req, res){
+  res.setHeader('Content-Type', 'application/json');
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Headers', "Access-Control-Allow-Origin, Origin, X-Requested-With, Content-type, Accept, Vary");
+  res.setHeader('Vary', 'Origin');
+  console.log(req.params);
+  const key = req.params.key
+  const readStream = getFileStream(key)
+  console.log("attempting to fetch s3 archive");
+
+  //readStream.pipe(res);
+  // res.send({
+  //   key: key,
+
+  // });
+});
+/**
  * GET /room/:name
  */
 router.get('/room/:name', function (req, res) {
+  
   var roomName = req.params.name;
   var sessionId;
   var token;
@@ -181,6 +205,7 @@ router.post('/archive/start', function (req, res) {
       res.status(500).send({ error: 'startArchive error:' + err });
       return;
     }
+    
     res.setHeader('Content-Type', 'application/json');
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Headers', "Access-Control-Allow-Origin, Origin, X-Requested-With, Content-type, Accept, Vary");
@@ -263,6 +288,38 @@ router.get('/archive/:archiveId', function (req, res) {
 });
 
 /**
+ * GET /archive/:archiveId
+ */
+router.get('/s3/:archiveId', function (req, res) {
+  var archiveId = req.params.archiveId;
+
+  // fetch archive
+  console.log('attempting to return s3 url for ' + archiveId);
+  var s3URL = "https://pin-mi-project.s3.amazonaws.com/" + apiKey + "/" + archiveId + "/archive.mp4"
+  
+  //check if archive exists. 
+  opentok.getArchive(archiveId, function (err, archive) {
+    if (err) {
+      console.error('error in getArchive');
+      console.error(err);
+      res.status(500).send({ error: 'getArchive error:' + err });
+      return;
+    }
+
+    // extract as a JSON object
+    res.setHeader('Content-Type', 'application/json');
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Headers', "Access-Control-Allow-Origin, Origin, X-Requested-With, Content-type, Accept, Vary");
+    res.setHeader('Vary', 'Origin');
+    //res.setHeader('Access-Control-Allow-Origin', 'https://pinmi-summer.netlify.app/');
+    res.send({
+      duration: archive.duration,
+      url :s3URL
+    });
+  });
+});
+
+/**
  * GET /archive
  */
 router.get('/archive', function (req, res) {
@@ -294,4 +351,5 @@ router.get('/archive', function (req, res) {
   });
 });
 
+debugger;
 module.exports = router;
