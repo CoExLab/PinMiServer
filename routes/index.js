@@ -405,7 +405,7 @@ router.post('/exitedRoom/:userMode/:sessionID', function (req, res) {
     if(roomTrack[sessionID] && roomTrack[sessionID]["roomActivated"]) {
       if(roomTrack[sessionID]["caller"] || roomTrack["callee"]) {
         //send back a not ready code
-        res.status(102).send({msg: "Room not empty"});
+        res.status(200).send({roomExited: false});
       }
       else {
         //send back a true response
