@@ -44,12 +44,12 @@ var roomTrack = {}
 function createRoomEntry(roomID, activatedStatus, callerStatus, calleeStatus){
   if (roomTrack[roomID]){
     console.log("Err: Room already Created")
-    return -1;
+    return false;
   }
   else{
     //creating object for a new Room entry in the roomTrack Dictionary
     roomTrack[roomID] = {"roomActivated": activatedStatus, "caller": callerStatus, "callee": calleeStatus}
-    return 0; 
+    return true; 
   }
 }
 
@@ -313,6 +313,11 @@ router.get('/archive/:archiveId', function (req, res) {
  * POST /enteredRoom/:userMode/:SessionID
  */
 router.post('/enteredRoom/:userMode/:sessionID', function (req, res) {
+  res.setHeader('Content-Type', 'application/json');
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Headers', "Access-Control-Allow-Origin, Origin, X-Requested-With, Content-type, Accept, Vary");
+  res.setHeader('Vary', 'Origin');
+
   //userMode must be either "callee" or "caller" 
   var userMode = req.params.userMode; 
   var sessionID = req.params.sessionID;
@@ -337,33 +342,32 @@ router.post('/enteredRoom/:userMode/:sessionID', function (req, res) {
   if (roomTrack[sessionID] && roomTrack[sessionID]["roomActivated"]){
     //edit object so that the given usermode is toggled to true 
     roomTrack[sessionID][userMode] = true;
+    res.send(roomTrack[sessionID]);
   }
-  //else:
   else{
     //Create object (json like structure) where usermode is toggled to true 
     //This object would have a value for roomActivated which is true. 
     //create key value pair in roomTrack. 
     if(createRoomEntry(sessionID, true, caller, callee)){
       //return a success code
-      res.status(200).send();
+      res.status(200).send(roomTrack[sessionID]);
     } else {
       //return an error code
       res.status(500).send({error: "roomTrack entry creation unsuccessful"});
     }    
   }
-
-    res.setHeader('Content-Type', 'application/json');
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Headers', "Access-Control-Allow-Origin, Origin, X-Requested-With, Content-type, Accept, Vary");
-    res.setHeader('Vary', 'Origin');
-    //res.setHeader('Access-Control-Allow-Origin', 'https://pinmi-summer.netlify.app/');
     res.send();
   });
 
-  /**
+/**
  * POST /exitedRoom/:userMode/:SessionID
  */
 router.post('/exitedRoom/:userMode/:sessionID', function (req, res) {
+  res.setHeader('Content-Type', 'application/json');
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Headers', "Access-Control-Allow-Origin, Origin, X-Requested-With, Content-type, Accept, Vary");
+  res.setHeader('Vary', 'Origin');
+
   var userMode = req.params.userMode;
   var sessionID = req.params.sessionID;
 
@@ -377,17 +381,12 @@ router.post('/exitedRoom/:userMode/:sessionID', function (req, res) {
     //edit object so that the given usermode is toggled to false 
     //send success
     roomTrack[sessionID][userMode] = false;
-    res.status(200).send();
+    res.status(200).send(roomTrack[sessionID]);
   }
   else {
     //send error message
     res.status(500).send({error: "Room does not exist"});
   } 
-
-    res.setHeader('Content-Type', 'application/json');
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Headers', "Access-Control-Allow-Origin, Origin, X-Requested-With, Content-type, Accept, Vary");
-    res.setHeader('Vary', 'Origin');
     //res.setHeader('Access-Control-Allow-Origin', 'https://pinmi-summer.netlify.app/');
     res.send();
   });
@@ -403,7 +402,7 @@ router.post('/exitedRoom/:userMode/:sessionID', function (req, res) {
     var sessionID = req.params.sessionID;
 
     if(roomTrack[sessionID] && roomTrack[sessionID]["roomActivated"]) {
-      if(roomTrack[sessionID]["caller"] || roomTrack["callee"]) {
+      if(roomTrack[sessionID]["caller"] || roomTrack[sessionID]["callee"]) {
         //send back a not ready code
         res.status(200).send({roomExited: false});
       }
@@ -417,7 +416,7 @@ router.post('/exitedRoom/:userMode/:sessionID', function (req, res) {
     }
   })
 
- 
+
 
 
 /**
