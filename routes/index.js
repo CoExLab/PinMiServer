@@ -32,6 +32,27 @@ var opentok = new OpenTok(apiKey, secret);
 var roomToSessionIdDictionary = {};
 var archivesCreated = []
 
+
+// roomtrack will have a key of the session id which has a 
+//value that is in object with true booleans cooresponding to caller and callee. 
+//This object would have a value for roomActivated
+//(Figure out way to delete roomtrack after every day)
+var roomTrack = {}
+
+//{room1: {roomActivated: false, caller: false, callee: false}}
+
+function createRoomEntry(roomID, activatedStatus, callerStatus, calleeStatus){
+  if (roomTrack[roomID]){
+    console.log("Err: Room already Created")
+    return -1;
+  }
+  else{
+    //creating object for a new Room entry in the roomTrack Dictionary
+    roomTrack[roomID] = {roomActivated: activatedStatus, caller: callerStatus, callee: calleeStatus}
+    return 0; 
+  }
+}
+
 // returns the room name, given a session ID that was associated with it
 function findRoomFromSessionId(sessionId) {
   return _.findKey(roomToSessionIdDictionary, function (value) { return value === sessionId; });
@@ -287,12 +308,119 @@ router.get('/archive/:archiveId', function (req, res) {
   });
 });
 
+
+/**
+ * POST /enteredRoom/:userMode/:SessionID
+ */
+router.post('/enteredRoom/:userMode/:sessionID', function (req, res) {
+  //userMode must be either "callee" or "caller" 
+  var userMode = req.params.userMode; 
+  var sessionID = req.params.sessionID;
+
+  var callee = false;
+  var caller = false;
+
+  if (userMode == "callee"){
+    callee = true;
+  }
+  else if (userMode == "caller"){
+    caller = true;
+  }
+  else{
+    //send an error. 
+  }
+
+  //check if room is in roomTrack already and if room is actived
+  if (roomTrack[sessionID] && roomTrack[sessionID][roomActivated]){
+    //edit object so that the given usermode is toggled to true 
+    roomTrack[sessionID][userMode] = true
+
+  }
+  //else:
+  else{
+    if (userMode == "callee"){
+      createRoomEntry(sessionID, true, false, true);
+    }
+    else if (userMode == "caller"){
+      createRoomEntry(sessionID, true, true, true);
+    }
+
+    //Create object (json like structure) where usermode is toggled to true 
+      //This object would have a value for roomActivated which is true. 
+    //create key value pair in roomTrack. 
+  }
+  //send send success or failure.
+
+    res.setHeader('Content-Type', 'application/json');
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Headers', "Access-Control-Allow-Origin, Origin, X-Requested-With, Content-type, Accept, Vary");
+    res.setHeader('Vary', 'Origin');
+    //res.setHeader('Access-Control-Allow-Origin', 'https://pinmi-summer.netlify.app/');
+    res.send();
+  });
+
+  /**
+ * POST /exitedRoom/:userMode/:SessionID
+ */
+router.post('/exitedRoom/:userMode/:sessionID', function (req, res) {
+  var userMode = req.params.userMode;
+  var sessionID = req.params.sessionID;
+
+  //check if room is in roomtrack and has been actived
+  //if it is
+    //edit object so that the given usermode is toggled to false 
+    //send success
+  //else:
+    //failure/error message 
+
+    res.setHeader('Content-Type', 'application/json');
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Headers', "Access-Control-Allow-Origin, Origin, X-Requested-With, Content-type, Accept, Vary");
+    res.setHeader('Vary', 'Origin');
+    //res.setHeader('Access-Control-Allow-Origin', 'https://pinmi-summer.netlify.app/');
+    res.send();
+  });
+
+  /**
+   * GET /isRoomEmpty/:sessionID
+   */
+  router.get('/isRoomEmpty/:sessionID', function (req, res){
+    res.setHeader('Content-Type', 'application/json');
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Headers', "Access-Control-Allow-Origin, Origin, X-Requested-With, Content-type, Accept, Vary");
+    res.setHeader('Vary', 'Origin');
+    var sessionID = req.params.sessionID;
+
+
+    //Find object cooresponding to key. 
+    //if roomActive == true:
+      //if caller and callee are both false:
+
+        //send back a true response
+      //else
+        //send back a not ready code. 
+    //else:
+      //send back an error
+
+
+
+  })
+
+ 
+
+
 /**
  * GET /archive/:archiveId
  */
 router.get('/s3/:archiveId', function (req, res) {
+  res.setHeader('Content-Type', 'application/json');
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Headers', "Access-Control-Allow-Origin, Origin, X-Requested-With, Content-type, Accept, Vary");
+  res.setHeader('Vary', 'Origin');
+
   var archiveId = req.params.archiveId;
 
+  //first get archive and test if the archive exists, and if the archive status is uploaded, stopped, or something else. 
   // fetch archive
   console.log('attempting to return s3 url for ' + archiveId);
   var s3URL = "https://pin-mi-project.s3.amazonaws.com/" + apiKey + "/" + archiveId + "/archive.mp4"
@@ -305,17 +433,21 @@ router.get('/s3/:archiveId', function (req, res) {
       res.status(500).send({ error: 'getArchive error:' + err });
       return;
     }
-
-    // extract as a JSON object
-    res.setHeader('Content-Type', 'application/json');
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Headers', "Access-Control-Allow-Origin, Origin, X-Requested-With, Content-type, Accept, Vary");
-    res.setHeader('Vary', 'Origin');
-    //res.setHeader('Access-Control-Allow-Origin', 'https://pinmi-summer.netlify.app/');
-    res.send({
-      duration: archive.duration,
-      url :s3URL
-    });
+    else if(archive.status == "uploaded"){//if vonage has archive data set yet 
+      res.send({
+        duration: archive.duration,
+        url :s3URL
+      });
+    }
+    else if (archive.status == "stopped"){
+      res.status(202).send({arcStatus: "stopped", message: "process not complete."})
+    }
+    else if (archive.status == "available"){
+      res.send({arcStatus: "available", message: "Archive not saved to s3. Saved in Vonage. Follow redirect", redirect: '/archive/:archiveId'})
+    }
+    else if (archive.status == "started"){
+      //res.send()
+    }
   });
 });
 
