@@ -330,6 +330,7 @@ router.post('/enteredRoom/:userMode/:sessionID', function (req, res) {
   //userMode was inputted incorrectly
   else{
     //send an error. 
+    res.status(500).send({error: "Incorrect userMode passed"});
   }
 
   //check if room is in roomTrack already and if room is actived
@@ -344,8 +345,10 @@ router.post('/enteredRoom/:userMode/:sessionID', function (req, res) {
     //create key value pair in roomTrack. 
     if(createRoomEntry(sessionID, true, caller, callee)){
       //return a success code
+      res.status(200).send();
     } else {
       //return an error code
+      res.status(500).send({error: "roomTrack entry creation unsuccessful"});
     }    
   }
 
@@ -366,6 +369,7 @@ router.post('/exitedRoom/:userMode/:sessionID', function (req, res) {
 
   if(userMode != "caller" && userMode != "callee"){
     //return error
+    res.status(500).send({error: "Incorrect userMode passed"});
   }
 
   //check if room is in roomtrack and has been actived
@@ -373,9 +377,11 @@ router.post('/exitedRoom/:userMode/:sessionID', function (req, res) {
     //edit object so that the given usermode is toggled to false 
     //send success
     roomTrack[sessionID][userMode] = false;
+    res.status(200).send();
   }
   else {
     //send error message
+    res.status(500).send({error: "Room does not exist"});
   } 
 
     res.setHeader('Content-Type', 'application/json');
@@ -399,13 +405,15 @@ router.post('/exitedRoom/:userMode/:sessionID', function (req, res) {
     if(roomTrack[sessionID] && roomTrack[sessionID]["roomActivated"]) {
       if(roomTrack[sessionID]["caller"] || roomTrack["callee"]) {
         //send back a not ready code
+        res.status(102).send({msg: "Room not empty"});
       }
       else {
         //send back a true response
+        res.send({roomExited: true})
       }
     }
     else {
-      //send back an error
+      res.status(500).send({ error: 'Room does not exist'});
     }
   })
 
