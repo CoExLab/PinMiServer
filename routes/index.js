@@ -336,6 +336,7 @@ router.post('/enteredRoom/:userMode/:sessionID', function (req, res) {
   else{
     //send an error. 
     res.status(500).send({error: "Incorrect userMode passed"});
+    return;
   }
 
   //check if room is in roomTrack already and if room is actived
@@ -374,8 +375,8 @@ router.post('/exitedRoom/:userMode/:sessionID', function (req, res) {
   if(userMode != "caller" && userMode != "callee"){
     //return error
     res.status(500).send({error: "Incorrect userMode passed"});
+    return;
   }
-
   //check if room is in roomtrack and has been actived
   if(roomTrack[sessionID] && roomTrack[sessionID]["roomActivated"]) {
     //edit object so that the given usermode is toggled to false 
@@ -388,7 +389,7 @@ router.post('/exitedRoom/:userMode/:sessionID', function (req, res) {
     res.status(500).send({error: "Room does not exist"});
   } 
     //res.setHeader('Access-Control-Allow-Origin', 'https://pinmi-summer.netlify.app/');
-    res.send();
+    res.send({test: "hello"});
   });
 
   /**
