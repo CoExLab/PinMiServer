@@ -48,7 +48,7 @@ function createRoomEntry(roomID, activatedStatus, callerStatus, calleeStatus){
   }
   else{
     //creating object for a new Room entry in the roomTrack Dictionary
-    roomTrack[roomID] = {roomActivated: activatedStatus, caller: callerStatus, callee: calleeStatus}
+    roomTrack[roomID] = {"roomActivated": activatedStatus, "caller": callerStatus, "callee": calleeStatus}
     return 0; 
   }
 }
@@ -320,36 +320,34 @@ router.post('/enteredRoom/:userMode/:sessionID', function (req, res) {
   var callee = false;
   var caller = false;
 
+  //check the value of userMode and assign the appropriate variables
   if (userMode == "callee"){
     callee = true;
   }
   else if (userMode == "caller"){
     caller = true;
   }
+  //userMode was inputted incorrectly
   else{
     //send an error. 
   }
 
   //check if room is in roomTrack already and if room is actived
-  if (roomTrack[sessionID] && roomTrack[sessionID][roomActivated]){
+  if (roomTrack[sessionID] && roomTrack[sessionID]["roomActivated"]){
     //edit object so that the given usermode is toggled to true 
-    roomTrack[sessionID][userMode] = true
-
+    roomTrack[sessionID][userMode] = true;
   }
   //else:
   else{
-    if (userMode == "callee"){
-      createRoomEntry(sessionID, true, false, true);
-    }
-    else if (userMode == "caller"){
-      createRoomEntry(sessionID, true, true, true);
-    }
-
     //Create object (json like structure) where usermode is toggled to true 
-      //This object would have a value for roomActivated which is true. 
+    //This object would have a value for roomActivated which is true. 
     //create key value pair in roomTrack. 
+    if(createRoomEntry(sessionID, true, caller, callee)){
+      //return a success code
+    } else {
+      //return an error code
+    }    
   }
-  //send send success or failure.
 
     res.setHeader('Content-Type', 'application/json');
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -366,12 +364,19 @@ router.post('/exitedRoom/:userMode/:sessionID', function (req, res) {
   var userMode = req.params.userMode;
   var sessionID = req.params.sessionID;
 
+  if(userMode != "caller" && userMode != "callee"){
+    //return error
+  }
+
   //check if room is in roomtrack and has been actived
-  //if it is
+  if(roomTrack[sessionID] && roomTrack[sessionID]["roomActivated"]) {
     //edit object so that the given usermode is toggled to false 
     //send success
-  //else:
-    //failure/error message 
+    roomTrack[sessionID][userMode] = false;
+  }
+  else {
+    //send error message
+  } 
 
     res.setHeader('Content-Type', 'application/json');
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -391,19 +396,17 @@ router.post('/exitedRoom/:userMode/:sessionID', function (req, res) {
     res.setHeader('Vary', 'Origin');
     var sessionID = req.params.sessionID;
 
-
-    //Find object cooresponding to key. 
-    //if roomActive == true:
-      //if caller and callee are both false:
-
+    if(roomTrack[sessionID] && roomTrack[sessionID]["roomActivated"]) {
+      if(roomTrack[sessionID]["caller"] || roomTrack["callee"]) {
+        //send back a not ready code
+      }
+      else {
         //send back a true response
-      //else
-        //send back a not ready code. 
-    //else:
+      }
+    }
+    else {
       //send back an error
-
-
-
+    }
   })
 
  
