@@ -446,6 +446,7 @@ router.get('/s3/:archiveId', function (req, res) {
     }
     else if(archive.status == "uploaded"){//if vonage has archive data set yet 
       res.send({
+        arcStatus: "uploaded",
         duration: archive.duration,
         url :s3URL
       });
