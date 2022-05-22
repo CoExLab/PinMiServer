@@ -4,7 +4,7 @@
 ## Introduction to server
 The basic server is based on [sample code](https://github.com/opentok/opentok-node/blob/main/sample/Archiving/README.md) provided by Vonage. The server is hosted using Heroku at the address https://pinmi-node-server.herokuapp.com/. The sample code also comes with some files that display a front end if you were to look at the given server URL in a browser. It uses Express to create server routes. You can learn more about Express routes [here](https://developer.mozilla.org/en-US/docs/Learn/Server-side/Express_Nodejs/routes). In short, each route is a function that is written to handle http requests to the routes associated URL. The current routes that the server serves are the following:
 
-### Routes in routes.js
+### Routes in routes/index.js
 #### Built in Vonage routes:
 * GET ‘/’
 * GET ‘/Session’
