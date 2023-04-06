@@ -469,6 +469,16 @@ router.get("/isRoomEmpty/:sessionID", function (req, res) {
   }
 });
 
+router.post("/testDeploy", function (req, res) {
+  res.setHeader("Content-Type", "application/json");
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "Access-Control-Allow-Origin, Origin, X-Requested-With, Content-type, Accept, Vary"
+  );
+  res.setHeader("Vary", "Origin");
+  res.send({ test: "test deploy" });
+});
 /**
  * POST /joinDiscussion/:userMode/:SessionID
  */
