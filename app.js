@@ -49,7 +49,7 @@ const server = require("http").createServer(app);
 const { Server } = require("socket.io");
 const io = new Server(server, {
   cors: {
-    origin: "*", // Update the origin value to your frontend domain to restrict the allowed origins
+    origin: "http://localhost:3000", // Update the origin value to your frontend domain to restrict the allowed origins
     methods: ["GET", "POST"],
   },
 });
