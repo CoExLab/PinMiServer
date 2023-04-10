@@ -1,11 +1,10 @@
+/* eslint-disable */
 var express = require("express");
 var router = express.Router();
 var path = require("path");
 var _ = require("lodash");
 const cors = require("cors");
 const { getFileStream } = require("./s3");
-const fs = require("fs");
-const util = require("util");
 
 var apiKey = process.env.TOKBOX_API_KEY;
 var secret = process.env.TOKBOX_SECRET;
@@ -469,7 +468,10 @@ router.get("/isRoomEmpty/:sessionID", function (req, res) {
   }
 });
 
-router.post("/testDeploy", function (req, res) {
+/**
+ * To be deleted
+ */
+router.get("/testDeploy", function (req, res) {
   res.setHeader("Content-Type", "application/json");
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader(
@@ -479,6 +481,7 @@ router.post("/testDeploy", function (req, res) {
   res.setHeader("Vary", "Origin");
   res.send({ test: "test deploy" });
 });
+
 /**
  * POST /joinDiscussion/:userMode/:SessionID
  */

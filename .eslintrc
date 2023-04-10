@@ -1,5 +1,8 @@
 {
   "extends": "airbnb-base/legacy",
+  "parserOptions": {
+    "ecmaVersion": 6
+  },
   "rules": {
     "no-restricted-syntax": ["off", "ForInStatement"],
     "no-console": ["error", { "allow": ["log", "error"] }]
