@@ -8,7 +8,9 @@ var bodyParser = require("body-parser");
 
 var index = require("./routes/index");
 var cors = require("cors");
-var app = express();
+const http = require("http");
+const { Server } = require("socket.io");
+const app = express();
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
@@ -44,8 +46,10 @@ app.use(function (err, req, res, next) {
   res.render("error");
 });
 
-const server = createServer(app);
-const { Server } = require("socket.io");
+const server = http.createServer(app);
+server.listen(process.env.PORT || 3000, () => {
+  console.log("SERVER IS RUNNING");
+});
 const io = new Server(server, {
   cors: {
     origin: "*", // Update the origin value to your frontend domain to restrict the allowed origins
@@ -71,8 +75,4 @@ io.on("connection", (socket) => {
   });
 });
 
-server.listen(3000, () => {
-  console.log("SERVER IS RUNNING");
-});
-
-module.exports = { app, server };
+// module.exports = { app, server };
