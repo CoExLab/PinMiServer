@@ -15,7 +15,6 @@ app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "jade");
 
 app.use(cors());
-app.use(express.static("public"));
 
 // uncomment after placing your favicon in /public
 // app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
@@ -45,11 +44,11 @@ app.use(function (err, req, res, next) {
   res.render("error");
 });
 
-const server = require("http").createServer(app);
+const server = createServer(app);
 const { Server } = require("socket.io");
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:3000", // Update the origin value to your frontend domain to restrict the allowed origins
+    origin: "*", // Update the origin value to your frontend domain to restrict the allowed origins
     methods: ["GET", "POST"],
   },
 });
@@ -70,6 +69,10 @@ io.on("connection", (socket) => {
       message: "Your peer has joined the discussion room",
     });
   });
+});
+
+server.listen(3000, () => {
+  console.log("SERVER IS RUNNING");
 });
 
 module.exports = { app, server };
