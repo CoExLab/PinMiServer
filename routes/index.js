@@ -468,59 +468,59 @@ router.get("/isRoomEmpty/:sessionID", function (req, res) {
   }
 });
 
-/**
- * To be deleted
- */
-router.get("/testDeploy", function (req, res) {
-  res.setHeader("Content-Type", "application/json");
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader(
-    "Access-Control-Allow-Headers",
-    "Access-Control-Allow-Origin, Origin, X-Requested-With, Content-type, Accept, Vary"
-  );
-  res.setHeader("Vary", "Origin");
-  res.send({ test: "test deploy" });
-});
+// /**
+//  * To be deleted
+//  */
+// router.get("/testDeploy", function (req, res) {
+//   res.setHeader("Content-Type", "application/json");
+//   res.setHeader("Access-Control-Allow-Origin", "*");
+//   res.setHeader(
+//     "Access-Control-Allow-Headers",
+//     "Access-Control-Allow-Origin, Origin, X-Requested-With, Content-type, Accept, Vary"
+//   );
+//   res.setHeader("Vary", "Origin");
+//   res.send({ test: "test deploy" });
+// });
 
-/**
- * POST /joinDiscussion/:userMode/:SessionID
- */
-router.post("/joinDiscussion/:userMode/:sessionID", function (req, res) {
-  res.setHeader("Content-Type", "application/json");
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader(
-    "Access-Control-Allow-Headers",
-    "Access-Control-Allow-Origin, Origin, X-Requested-With, Content-type, Accept, Vary"
-  );
-  res.setHeader("Vary", "Origin");
+// /**
+//  * POST /joinDiscussion/:userMode/:SessionID
+//  */
+// router.post("/joinDiscussion/:userMode/:sessionID", function (req, res) {
+//   res.setHeader("Content-Type", "application/json");
+//   res.setHeader("Access-Control-Allow-Origin", "*");
+//   res.setHeader(
+//     "Access-Control-Allow-Headers",
+//     "Access-Control-Allow-Origin, Origin, X-Requested-With, Content-type, Accept, Vary"
+//   );
+//   res.setHeader("Vary", "Origin");
 
-  //userMode must be either "callee" or "caller"
-  var userMode = req.params.userMode;
-  var sessionID = req.params.sessionID;
+//   //userMode must be either "callee" or "caller"
+//   var userMode = req.params.userMode;
+//   var sessionID = req.params.sessionID;
 
-  //userMode was inputted incorrectly
-  if (userMode != "caller" && userMode != "callee") {
-    //return error
-    res.status(500).send({ error: "Incorrect userMode passed" });
-    return;
-  }
+//   //userMode was inputted incorrectly
+//   if (userMode != "caller" && userMode != "callee") {
+//     //return error
+//     res.status(500).send({ error: "Incorrect userMode passed" });
+//     return;
+//   }
 
-  //check if room is in roomtrack and has been actived
-  if (roomTrack[sessionID] && roomTrack[sessionID]["roomActivated"]) {
-    //edit object so that the given usermode's joinedDiscussion is set to true
-    if (userMode == "callee") {
-      roomTrack[sessionID].calleeJoinedDiscussion = true;
-    } else if (userMode == "caller") {
-      roomTrack[sessionID].callerJoinedDiscussion = true;
-    }
-    res.status(200).send(roomTrack[sessionID]);
-  } else {
-    //send error message
-    res.status(500).send({ error: "Room does not exist" });
-  }
+//   //check if room is in roomtrack and has been actived
+//   if (roomTrack[sessionID] && roomTrack[sessionID]["roomActivated"]) {
+//     //edit object so that the given usermode's joinedDiscussion is set to true
+//     if (userMode == "callee") {
+//       roomTrack[sessionID].calleeJoinedDiscussion = true;
+//     } else if (userMode == "caller") {
+//       roomTrack[sessionID].callerJoinedDiscussion = true;
+//     }
+//     res.status(200).send(roomTrack[sessionID]);
+//   } else {
+//     //send error message
+//     res.status(500).send({ error: "Room does not exist" });
+//   }
 
-  res.send({ test: "joinDiscussion" });
-});
+//   res.send({ test: "joinDiscussion" });
+// });
 
 /**
  * GET /archive/:archiveId

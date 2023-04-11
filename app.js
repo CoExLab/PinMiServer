@@ -16,18 +16,18 @@ const app = express();
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "jade");
 
-const corsOptions = {
-  origin: "https://www.pin-mi.com",
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: [
-    "Origin",
-    "X-Requested-With",
-    "Content-Type",
-    "Accept",
-    "Authorization",
-  ],
-};
-app.use(cors(corsOptions));
+// const corsOptions = {
+//   origin: "https://www.pin-mi.com",
+//   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+//   allowedHeaders: [
+//     "Origin",
+//     "X-Requested-With",
+//     "Content-Type",
+//     "Accept",
+//     "Authorization",
+//   ],
+// };
+app.use(cors());
 
 // uncomment after placing your favicon in /public
 // app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
@@ -57,16 +57,16 @@ app.use(function (err, req, res, next) {
   res.render("error");
 });
 
-const server = http.createServer(app);
-server.listen(process.env.PORT || 3000, () => {
-  console.log("SERVER IS RUNNING");
-});
-const io = new Server(server, {
-  cors: {
-    origin: "*", // Update the origin value to your frontend domain to restrict the allowed origins
-    methods: ["GET", "POST"],
-  },
-});
+// const server = http.createServer(app);
+// server.listen(process.env.PORT || 3000, () => {
+//   console.log("SERVER IS RUNNING");
+// });
+// const io = new Server(server, {
+//   cors: {
+//     origin: "*", // Update the origin value to your frontend domain to restrict the allowed origins
+//     methods: ["GET", "POST"],
+//   },
+// });
 
 /**
  * socket.io event handler
