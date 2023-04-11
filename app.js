@@ -9,7 +9,7 @@ var bodyParser = require("body-parser");
 var index = require("./routes/index");
 var cors = require("cors");
 const http = require("http");
-const { Server } = require("socket.io");
+// const { Server } = require("socket.io");
 const app = express();
 
 // view engine setup
@@ -71,19 +71,19 @@ const io = new Server(server, {
 /**
  * socket.io event handler
  */
-io.on("connection", (socket) => {
-  console.log("User connected: ", socket.id);
+// io.on("connection", (socket) => {
+//   console.log("User connected: ", socket.id);
 
-  socket.on("join_reflection", ({ sessionID }) => {
-    socket.join(`room-${sessionID}`);
-  });
+//   socket.on("join_reflection", ({ sessionID }) => {
+//     socket.join(`room-${sessionID}`);
+//   });
 
-  // join a discussion room
-  socket.on("join_discussion", ({ sessionID }) => {
-    socket.to(`room-${sessionID}`).emit("notify_join_discussion", {
-      message: "Your peer has joined the discussion room",
-    });
-  });
-});
+//   // join a discussion room
+//   socket.on("join_discussion", ({ sessionID }) => {
+//     socket.to(`room-${sessionID}`).emit("notify_join_discussion", {
+//       message: "Your peer has joined the discussion room",
+//     });
+//   });
+// });
 
 // module.exports = { app, server };
